@@ -4,7 +4,7 @@ import mysql from 'mysql';
 class Connection {
   constructor() {
     this.connection = mysql.createConnection({
-      host: 'localhost',
+      host: 'mysql',
       user: 'root',
       password: 'shopping_list',
       database: 'shopping_list',

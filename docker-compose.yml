@@ -1,15 +1,36 @@
 version: '3.3'
 
 services:
-  db:
+
+  nginx:
+    build:
+      context: ./nginx
+    ports:
+      - "8080:80"
+
+  mysql:
     image: mysql:5.7
     volumes:
       - db_data:/var/lib/mysql
-    ports:
-      - 3306:3306
+    expose:
+      - "3306"
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: shopping_list
       MYSQL_DATABASE: shopping_list
+
+  webapp:
+    build:
+      context: ./webapp
+    expose:
+      - "3000"
+
+  apollo:
+    build:
+      context: ./server
+    expose:
+      - "5000"
+
 volumes:
     db_data:
+      external: true
