@@ -24,12 +24,16 @@ services:
       context: ./webapp
     expose:
       - "3000"
+    volumes:
+      - ./webapp:/webapp
 
   apollo:
     build:
       context: ./server
     expose:
       - "5000"
+    volumes:
+      - ./server:/app
 
 volumes:
     db_data:
