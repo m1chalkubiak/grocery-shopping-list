@@ -11,8 +11,13 @@ export default `
     list(id: Int!): List
     item(id: Int!): Item
   }
+  
+  type Mutation {
+    toggleItemActive(id: Int!, value: Boolean!): Item
+  }
 
   schema {
     query: Query
+    mutation: Mutation
   }
 `;
