@@ -1,4 +1,5 @@
 import mysql from 'mysql';
+import { path } from 'ramda'
 
 
 class Connection {
@@ -8,28 +9,18 @@ class Connection {
       user: 'root',
       password: 'shopping_list',
       database: 'shopping_list',
+      multipleStatements: true,
     });
     this.connection.connect();
   }
 
-  queryOne(sql) {
+  query(sql, resultPosition = []) {
     return new Promise((resolve, reject) => {
       this.connection.query(sql, (err, result) => {
         if (err) {
           reject(err);
         }
-        resolve(result[0]);
-      })
-    });
-  }
-
-  queryList(sql) {
-    return new Promise((resolve, reject) => {
-      this.connection.query(sql, (err, result) => {
-        if (err) {
-          reject(err);
-        }
-        resolve(result);
+        resolve(path(resultPosition, result));
       })
     });
   }

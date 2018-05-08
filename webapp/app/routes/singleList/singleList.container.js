@@ -5,20 +5,21 @@ import { hot } from 'react-hot-loader';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'ramda';
 import { withStyles } from 'material-ui/styles';
-import styles from './home.styles';
+import styles from './singleList.styles';
 
-import { Home } from './home.component';
+import { SingleList } from './singleList.component';
 import { ListsActions } from '../../modules/lists/lists.redux';
-import { selectListsData, selectListsIsLoadingData } from '../../modules/lists/lists.selectors';
+import { selectListsSingle, selectListsIsLoadingSingle } from '../../modules/lists/lists.selectors';
 
 
 const mapStateToProps = createStructuredSelector({
-  lists: selectListsData,
-  isLoadingLists: selectListsIsLoadingData,
+  list: selectListsSingle,
+  isLoadingList: selectListsIsLoadingSingle,
 });
 
 export const mapDispatchToProps = (dispatch) => bindActionCreators({
-  fetchLists: ListsActions.fetch,
+  fetchList: ListsActions.fetchSingle,
+  toggleItemActive: ListsActions.toggleItemActive,
 }, dispatch);
 
 export default compose(
@@ -26,4 +27,4 @@ export default compose(
   connect(mapStateToProps, mapDispatchToProps),
   withStyles(styles, { withTheme: true }),
   withRouter
-)(Home);
+)(SingleList);

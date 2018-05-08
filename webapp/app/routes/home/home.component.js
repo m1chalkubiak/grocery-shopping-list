@@ -1,50 +1,61 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import Helmet from 'react-helmet';
-import { FormattedMessage } from 'react-intl';
-import envConfig from 'env-config';
+import Button from 'material-ui/Button';
+import AddIcon from '@material-ui/icons/Add';
+import Zoom from 'material-ui/transitions/Zoom';
+import { CircularProgress } from 'material-ui/Progress';
+import { ifElse, always } from 'ramda';
 
-import messages from './home.messages';
-import { MaintainerList } from './maintainerList/maintainerList.component';
-import { Container, Title, TitleLogo, EnvName } from './home.styles';
+
+import { Container, LoaderContainer } from './home.styles';
+import { Lists } from '../../components/lists/lists.component';
 
 export class Home extends PureComponent {
   static propTypes = {
-    items: PropTypes.object,
-    language: PropTypes.string.isRequired,
-    fetchMaintainers: PropTypes.func.isRequired,
-    setLanguage: PropTypes.func.isRequired,
+    lists: PropTypes.object,
+    isLoadingLists: PropTypes.bool,
+    fetchLists: PropTypes.func.isRequired,
     match: PropTypes.object.isRequired,
-    location: PropTypes.object.isRequired,
     history: PropTypes.shape({
       push: PropTypes.func.isRequired,
     }).isRequired,
+    classes: PropTypes.object.isRequired,
+    theme: PropTypes.object.isRequired,
   };
 
   componentWillMount() {
-    this.props.fetchMaintainers(this.props.language);
+    this.props.fetchLists();
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.language !== this.props.language) {
-      this.props.fetchMaintainers(nextProps.language);
-    }
-  }
+  handleListClick = (list) => {
+    this.props.history.push(`/${this.props.match.params.lang}/${list.get('id')}`);
+  };
 
-  render() {
+  renderLoader = () => (
+    <LoaderContainer>
+      <CircularProgress size={50} color="secondary" />
+    </LoaderContainer>
+  );
+
+  renderContent = () => {
+    const { classes, theme: { transitions: { duration } }, lists } = this.props;
+
     return (
       <Container>
-        <Helmet title="Homepage" />
+        <Lists data={lists} onListClick={this.handleListClick} />
 
-        <Title>
-          <TitleLogo name="logo" />
-          <FormattedMessage {...messages.welcome} />
-        </Title>
-
-        <EnvName>Environment: {envConfig.name}</EnvName>
-
-        <MaintainerList items={this.props.items} />
+        <Zoom in unmountOnExit timeout={{ enter: duration.enteringScreen, exit: duration.leavingScreen }}>
+          <Button variant="fab" color="primary" aria-label="add" className={classes.fab}>
+            <AddIcon />
+          </Button>
+        </Zoom>
       </Container>
     );
-  }
+  };
+
+  render = () => ifElse(
+    always(this.props.isLoadingLists),
+    this.renderLoader,
+    this.renderContent
+  )();
 }

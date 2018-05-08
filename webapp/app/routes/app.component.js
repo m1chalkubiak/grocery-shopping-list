@@ -2,8 +2,11 @@ import React, { PureComponent, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
 import { IntlProvider } from 'react-intl';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 import { appLocales, translationMessages } from '../i18n';
+import { theme } from '../theme/global';
+import { Header } from '../components/header/header.component';
 import { DEFAULT_LOCALE } from '../modules/locales/locales.redux';
 
 
@@ -24,7 +27,7 @@ export class App extends PureComponent {
     if (appLocales.indexOf(language) === -1) {
       this.props.setLanguage(DEFAULT_LOCALE);
       this.props.history.push('/404');
-    } else {
+    } else if (this.props.language !== language) {
       this.props.setLanguage(language);
     }
   }
@@ -49,7 +52,12 @@ export class App extends PureComponent {
           messages={translationMessages[this.props.language]}
           location={this.props.location}
         >
-          {React.Children.only(this.props.children)}
+          <MuiThemeProvider theme={theme}>
+            <Fragment>
+              <Header />
+              {React.Children.only(this.props.children)}
+            </Fragment>
+          </MuiThemeProvider>
         </IntlProvider>
       </Fragment>
     );

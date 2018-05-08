@@ -1,28 +1,23 @@
 import styled from 'styled-components';
 
-import { SpriteImage } from '../../theme';
+export default (theme) => ({
+  fab: {
+    position: 'absolute',
+    bottom: theme.spacing.unit * 2,
+    right: theme.spacing.unit * 2,
+    zIndex: 3,
+  },
+});
 
 export const Container = styled.div`
- display: flex;
- flex-direction: column;
- align-items: center;
- justify-content: center;
- text-align: center;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
 `;
 
-export const Title = styled.h1`
- display: flex;
- flex-direction: column;
- align-items: center;
- justify-content: center;
-`;
-
-export const TitleLogo = SpriteImage.extend`
-  margin-bottom: 16px;
-`;
-
-export const EnvName = styled.div`
-  color: green;
-  margin-top: 40px;
-  margin-bottom: 40px;
+export const LoaderContainer = styled.div`
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
