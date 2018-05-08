@@ -15,10 +15,20 @@ const resolvers = {
   },
   Mutation: {
     toggleItemActive: (_, { id, value }) => {
-      return Connection.query(`
-        UPDATE list_items SET active = ${value} WHERE id = ${id};
-        SELECT * FROM list_items WHERE id = ${id};
-      `, ['1', '0']);
+      return Connection
+        .query(`
+          UPDATE list_items SET active = ${value} WHERE id = ${id};
+          SELECT * FROM list_items WHERE id = ${id};
+        `, ['1', '0'])
+        .then((data) => {
+          Connection.pubSub.publish('itemUpdated', { itemUpdated: data});
+          return data;
+        });
+    },
+  },
+  Subscription: {
+    itemUpdated: {
+      subscribe: () => Connection.pubSub.asyncIterator('itemUpdated')
     },
   },
   List: {

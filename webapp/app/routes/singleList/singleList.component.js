@@ -1,9 +1,10 @@
 import React, { PureComponent, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { ifElse, propEq } from 'ramda';
+import { List } from 'immutable';
 import Typograpghy from 'material-ui/Typography';
 import IconButton from 'material-ui/IconButton';
-import List, { ListItem, ListItemSecondaryAction } from 'material-ui/List';
+import ListContainer, { ListItem, ListItemSecondaryAction } from 'material-ui/List';
 import Checkbox from 'material-ui/Checkbox';
 import Divider from 'material-ui/Divider';
 import Button from 'material-ui/Button';
@@ -92,8 +93,8 @@ export class SingleList extends PureComponent {
           <ListsProgress list={list} />
         </Collapse>
 
-        <List disablePadding >
-          {list.get('items').toArray().map((item) => (
+        <ListContainer disablePadding >
+          {list.get('items', List()).toArray().map((item) => (
             <Fragment key={item.get('id')}>
               <ListItem
                 role={undefined}
@@ -123,7 +124,7 @@ export class SingleList extends PureComponent {
               <Divider />
             </Fragment>
           ))}
-        </List>
+        </ListContainer>
 
         <Zoom in unmountOnExit timeout={{ enter: duration.enteringScreen, exit: duration.leavingScreen }}>
           <Button variant="fab" color="primary" aria-label="add" className={classes.fab}>

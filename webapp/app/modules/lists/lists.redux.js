@@ -11,6 +11,9 @@ export const { Types: ListsTypes, Creators: ListsActions } = createActions({
   toggleItemActive: ['id', 'value'],
   toggleItemActiveSuccess: ['data'],
   toggleItemActiveError: ['payload'],
+  subscribeItem: [],
+  subscribeItemError: ['payload'],
+  onItemUpdated: ['data'],
 }, { prefix: 'LISTS_' });
 
 const ListsRecord = Record({
@@ -40,6 +43,14 @@ const fetchSingleErrorHandler = (state) => state.merge({ isLoadingSingle: false 
 const toggleItemActiveSuccessHandler = (state, { data }) => state
   .updateIn(['single', 'items'], (items) => items.map((item) => item.get('id') === data.id ? fromJS(data) : item));
 
+const onItemUpdatedHandler = (state = INITIAL_STATE, { data }) => state
+  .updateIn(['single', 'items'], List(), (items) => items.map(
+    (item) => item.get('id') === data.id ? fromJS(data) : item)
+  )
+  .update('data', (lists) => lists.map(
+    (list) => list.update('items', (items) => items.map((item) => item.get('id') === data.id ? fromJS(data) : item))
+  ));
+
 export const reducer = createReducer(INITIAL_STATE, {
   [ListsTypes.FETCH]: fetchHandler,
   [ListsTypes.FETCH_SUCCESS]: fetchSuccessHandler,
@@ -48,4 +59,5 @@ export const reducer = createReducer(INITIAL_STATE, {
   [ListsTypes.FETCH_SINGLE_SUCCESS]: fetchSingleSuccessHandler,
   [ListsTypes.FETCH_SINGLE_ERROR]: fetchSingleErrorHandler,
   [ListsTypes.TOGGLE_ITEM_ACTIVE_SUCCESS]: toggleItemActiveSuccessHandler,
+  [ListsTypes.ON_ITEM_UPDATED]: onItemUpdatedHandler,
 });

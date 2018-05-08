@@ -15,9 +15,14 @@ export default `
   type Mutation {
     toggleItemActive(id: Int!, value: Boolean!): Item
   }
+  
+  type Subscription {
+    itemUpdated: Item
+  }
 
   schema {
     query: Query
     mutation: Mutation
+    subscription: Subscription
   }
 `;

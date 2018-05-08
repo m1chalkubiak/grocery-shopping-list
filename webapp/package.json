@@ -65,7 +65,10 @@
     "@material-ui/icons": "^1.0.0-beta.43",
     "apollo-cache-inmemory": "^1.2.0",
     "apollo-client": "^2.3.0",
+    "apollo-link": "^1.2.2",
     "apollo-link-http": "^1.5.4",
+    "apollo-link-ws": "^1.0.8",
+    "apollo-utilities": "^1.0.12",
     "babel-polyfill": "6.26.0",
     "chalk": "2.3.1",
     "compression": "1.7.1",
@@ -111,6 +114,7 @@
     "reselect": "3.0.1",
     "semver-compare": "^1.0.0",
     "styled-components": "^3.1.6",
+    "subscriptions-transport-ws": "^0.9.8",
     "ua-parser-js": "^0.7.17"
   },
   "devDependencies": {

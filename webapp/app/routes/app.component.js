@@ -14,6 +14,7 @@ export class App extends PureComponent {
   static propTypes = {
     language: PropTypes.string,
     setLanguage: PropTypes.func.isRequired,
+    subscribeListItem: PropTypes.func.isRequired,
     children: PropTypes.node,
     match: PropTypes.object.isRequired,
     history: PropTypes.shape({
@@ -23,6 +24,8 @@ export class App extends PureComponent {
   };
 
   componentWillMount() {
+    this.props.subscribeListItem();
+
     const language = this.props.match.params.lang || DEFAULT_LOCALE;
     if (appLocales.indexOf(language) === -1) {
       this.props.setLanguage(DEFAULT_LOCALE);
