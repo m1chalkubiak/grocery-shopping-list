@@ -1,6 +1,9 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import { graphqlExpress, graphiqlExpress } from 'apollo-server-express';
+import { createServer } from 'http';
+import { execute, subscribe } from 'graphql';
+import { SubscriptionServer } from 'subscriptions-transport-ws';
 import { makeExecutableSchema } from 'graphql-tools';
 
 import typeDefs from './schema';
@@ -19,6 +22,17 @@ const app = express();
 app.use('/api', bodyParser.json(), graphqlExpress({ schema: myGraphQLSchema }));
 app.get('/graphiql', graphiqlExpress({ endpointURL: '/api' })); // if you want GraphiQL enabled
 
-app.listen(PORT);
+const server = createServer(app);
+
+server.listen(PORT, () => {
+  new SubscriptionServer({
+    execute,
+    subscribe,
+    schema: myGraphQLSchema,
+  }, {
+    server: server,
+    path: '/subscriptions',
+  });
+});
 
 cleanup();

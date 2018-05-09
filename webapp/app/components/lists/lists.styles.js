@@ -22,6 +22,8 @@ export default (theme) => ({
   },
   cardIconButton: {
     marginTop: 4,
+    marginLeft: 0,
+    marginRight: 0,
     width: 32,
     height: 32,
   },

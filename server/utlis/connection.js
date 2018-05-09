@@ -1,5 +1,6 @@
 import mysql from 'mysql';
 import { path } from 'ramda'
+import { PubSub } from 'graphql-subscriptions';
 
 
 class Connection {
@@ -11,6 +12,7 @@ class Connection {
       database: 'shopping_list',
       multipleStatements: true,
     });
+    this.pubSub = new PubSub();
     this.connection.connect();
   }
 

@@ -1,4 +1,5 @@
-import { put, takeLatest } from 'redux-saga/effects';
+import { put, take, takeLatest } from 'redux-saga/effects';
+import { eventChannel } from 'redux-saga';
 import gql from 'graphql-tag';
 import reportError from 'report-error';
 
@@ -94,8 +95,44 @@ export function* toggleItemActive({ id, value }) {
 }
 
 
+function itemChannel(subscriptionName) {
+  return eventChannel((emit) => {
+    api.subscribe({
+      query: gql`
+        subscription on${subscriptionName} {
+          ${subscriptionName} {
+            id,
+            name,
+            active,
+          }
+        }
+      `,
+    }).subscribe({ next: emit });
+
+    return () => {};
+  });
+}
+
+export function* subscribeItem() {
+  try {
+    const itemUpdatedChannel = itemChannel('itemUpdated');
+    while (true) {
+      const { data } = yield take(itemUpdatedChannel);
+      yield put(ListsActions.onItemUpdated(data.itemUpdated));
+    }
+  } catch (e) {
+    if (e.response) {
+      return yield put(ListsActions.subscribeItemError(e.response.data));
+    }
+
+    return yield reportError(e);
+  }
+}
+
+
 export default function* listsSaga() {
   yield takeLatest(ListsTypes.FETCH, fetchLists);
   yield takeLatest(ListsTypes.FETCH_SINGLE, fetchSingleList);
   yield takeLatest(ListsTypes.TOGGLE_ITEM_ACTIVE, toggleItemActive);
+  yield takeLatest(ListsTypes.SUBSCRIBE_ITEM, subscribeItem);
 }
