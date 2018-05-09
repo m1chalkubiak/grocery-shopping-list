@@ -11,5 +11,4 @@ RUN  apk add --update --no-cache --virtual .build-deps make bash g++ && \
 COPY .babelrc .editorconfig plopfile.js /webapp/
 COPY  server/ /webapp/server/
 COPY app/ /webapp/app/
-RUN yarn build
-CMD ["yarn", "run", "start:prod"]
+CMD ["npm", "start"]

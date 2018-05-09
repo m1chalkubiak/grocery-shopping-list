@@ -13,7 +13,7 @@ const resolve = require('path').resolve;
 const app = express();
 /* eslint-enable import/no-extraneous-dependencies */
 
-app.use('/api', proxy('localhost:5000', {
+app.use('/api', proxy('http://apollo:5000', {
   forwardPath: function (req) {
     const currentPath = require('url').parse(req.url).path;
     return `/api${currentPath}`;
