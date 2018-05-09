@@ -33,6 +33,32 @@ export function* fetchLists() {
   }
 }
 
+export function* createList() {
+  try {
+    const { data } = yield api.mutate({
+      mutation: gql`
+        mutation createList($name: String!) {
+          createList(name: $name) {
+            name,
+          }
+        }
+      `,
+      variables: {
+        name: 'Some new name',
+      },
+    });
+
+    yield put(ListsActions.createSuccess(data));
+  } catch (e) {
+    if (e.response) {
+      yield put(ListsActions.createError(e.response.data));
+      return;
+    }
+
+    yield reportError(e);
+  }
+}
+
 export function* fetchSingleList({ id }) {
   try {
     const { data } = yield api.query({
@@ -94,7 +120,6 @@ export function* toggleItemActive({ id, value }) {
   }
 }
 
-
 function itemChannel(subscriptionName) {
   return eventChannel((emit) => {
     api.subscribe({
@@ -129,10 +154,10 @@ export function* subscribeItem() {
   }
 }
 
-
 export default function* listsSaga() {
   yield takeLatest(ListsTypes.FETCH, fetchLists);
   yield takeLatest(ListsTypes.FETCH_SINGLE, fetchSingleList);
   yield takeLatest(ListsTypes.TOGGLE_ITEM_ACTIVE, toggleItemActive);
+  yield takeLatest(ListsTypes.CREATE, createList);
   yield takeLatest(ListsTypes.SUBSCRIBE_ITEM, subscribeItem);
 }

@@ -21,6 +21,7 @@ export class Home extends PureComponent {
     }).isRequired,
     classes: PropTypes.object.isRequired,
     theme: PropTypes.object.isRequired,
+    createList: PropTypes.func.isRequired,
   };
 
   componentWillMount() {
@@ -29,6 +30,10 @@ export class Home extends PureComponent {
 
   handleListClick = (list) => {
     this.props.history.push(`/${this.props.match.params.lang}/${list.get('id')}`);
+  };
+
+  handleAddClick = () => {
+    this.props.createList();
   };
 
   renderLoader = () => (
@@ -45,7 +50,7 @@ export class Home extends PureComponent {
         <Lists data={lists} onListClick={this.handleListClick} />
 
         <Zoom in unmountOnExit timeout={{ enter: duration.enteringScreen, exit: duration.leavingScreen }}>
-          <Button variant="fab" color="primary" aria-label="add" className={classes.fab}>
+          <Button onClick={this.handleAddClick} variant="fab" color="primary" aria-label="add" className={classes.fab}>
             <AddIcon />
           </Button>
         </Zoom>

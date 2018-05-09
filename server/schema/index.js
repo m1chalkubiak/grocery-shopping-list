@@ -13,11 +13,13 @@ export default `
   }
   
   type Mutation {
+    createList(name: String!): List
     toggleItemActive(id: Int!, value: Boolean!): Item
   }
   
   type Subscription {
     itemUpdated: Item
+    listCreated: List
   }
 
   schema {

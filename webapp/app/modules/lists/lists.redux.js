@@ -11,8 +11,13 @@ export const { Types: ListsTypes, Creators: ListsActions } = createActions({
   toggleItemActive: ['id', 'value'],
   toggleItemActiveSuccess: ['data'],
   toggleItemActiveError: ['payload'],
+  create: ['name'],
+  createSuccess: ['data'],
+  createError: ['error'],
   subscribeItem: [],
   subscribeItemError: ['payload'],
+  subscribeList: [],
+  subscribeListError: ['payload'],
   onItemUpdated: ['data'],
 }, { prefix: 'LISTS_' });
 

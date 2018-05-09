@@ -15,6 +15,7 @@ export class App extends PureComponent {
     language: PropTypes.string,
     setLanguage: PropTypes.func.isRequired,
     subscribeListItem: PropTypes.func.isRequired,
+    subscribeList: PropTypes.func.isRequired,
     children: PropTypes.node,
     match: PropTypes.object.isRequired,
     history: PropTypes.shape({
@@ -25,6 +26,7 @@ export class App extends PureComponent {
 
   componentWillMount() {
     this.props.subscribeListItem();
+    this.props.subscribeList();
 
     const language = this.props.match.params.lang || DEFAULT_LOCALE;
     if (appLocales.indexOf(language) === -1) {

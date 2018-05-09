@@ -19,6 +19,7 @@ const mapStateToProps = createStructuredSelector({
 
 export const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchLists: ListsActions.fetch,
+  createList: ListsActions.create,
 }, dispatch);
 
 export default compose(

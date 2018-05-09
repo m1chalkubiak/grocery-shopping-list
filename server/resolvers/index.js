@@ -14,6 +14,17 @@ const resolvers = {
     }
   },
   Mutation: {
+    createList: (_, { name }) => {
+      return Connection
+        .query(`
+          INSERT INTO lists (name) VALUES ('${name}');
+          SELECT * FROM lists WHERE id = LAST_INSERT_ID();
+        `, ['1', '0'])
+        .then((data) => {
+          Connection.pubSub.publish('listCreated', { listCreated: data });
+          return data;
+        });
+    },
     toggleItemActive: (_, { id, value }) => {
       return Connection
         .query(`
@@ -21,7 +32,7 @@ const resolvers = {
           SELECT * FROM list_items WHERE id = ${id};
         `, ['1', '0'])
         .then((data) => {
-          Connection.pubSub.publish('itemUpdated', { itemUpdated: data});
+          Connection.pubSub.publish('itemUpdated', { itemUpdated: data });
           return data;
         });
     },
@@ -29,6 +40,9 @@ const resolvers = {
   Subscription: {
     itemUpdated: {
       subscribe: () => Connection.pubSub.asyncIterator('itemUpdated')
+    },
+    listCreated: {
+      subscribe: () => Connection.pubSub.asyncIterator('listCreated')
     },
   },
   List: {
