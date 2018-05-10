@@ -18,6 +18,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 
 import { ListsProgress } from '../../components/listProgress/listProgress.component';
+import { NameModal } from '../../components/nameModal/nameModal.component';
 import { Container, LoaderContainer, TitleContainer, ListItemText } from './singleList.styles';
 
 
@@ -33,6 +34,14 @@ export class SingleList extends PureComponent {
     }).isRequired,
     classes: PropTypes.object.isRequired,
     theme: PropTypes.object.isRequired,
+    isCreateModalVisible: PropTypes.bool.isRequired,
+    changeModalVisibility: PropTypes.func.isRequired,
+    changeEditModalVisibility: PropTypes.func.isRequired,
+    createItem: PropTypes.func.isRequired,
+    updateItem: PropTypes.func.isRequired,
+    removeItem: PropTypes.func.isRequired,
+    isEditModalVisible: PropTypes.any.isRequired,
+    editItemName: PropTypes.string,
   };
 
   state = {
@@ -59,12 +68,8 @@ export class SingleList extends PureComponent {
     this.props.toggleItemActive(item.get('id'), !item.get('active'));
   };
 
-  handleEditClick = () => {
-    // TODO
-  };
-
-  handleDeleteClick = () => {
-    // TODO
+  handleDeleteClick = (item) => {
+    this.props.removeItem(item.get('id'));
   };
 
   renderLoader = () => (
@@ -78,6 +83,23 @@ export class SingleList extends PureComponent {
 
     return (
       <Container>
+        <NameModal
+          label="Create new list item"
+          isVisible={this.props.isCreateModalVisible}
+          onClose={() => this.props.changeModalVisibility(false)}
+          onSave={this.props.createItem}
+          initialValue=""
+        />
+
+        <NameModal
+          label="Update item"
+          isVisible={!!this.props.isEditModalVisible}
+          onClose={() => this.props.changeEditModalVisibility(false)}
+          onSave={(value) => this.props.updateItem(value)}
+          initialValue={this.props.editItemName}
+          edit
+        />
+
         <Collapse in={this.state.headerIn}>
           <Typograpghy className={classes.header} variant="title" noWrap>
             <IconButton color="inherit" aria-label="Menu" onClick={this.handleBackClick}>
@@ -113,10 +135,13 @@ export class SingleList extends PureComponent {
                   </Typograpghy>
                 </ListItemText>
                 <ListItemSecondaryAction>
-                  <IconButton className={classes.itemIconButton} onClick={this.handleEditClick}>
+                  <IconButton
+                    className={classes.itemIconButton}
+                    onClick={() => this.props.changeEditModalVisibility(item.get('id'))}
+                  >
                     <EditIcon className={classes.itemIcon} />
                   </IconButton>
-                  <IconButton className={classes.itemIconButton} onClick={this.handleDeleteClick}>
+                  <IconButton className={classes.itemIconButton} onClick={() => this.handleDeleteClick(item)}>
                     <DeleteIcon className={classes.itemIcon} />
                   </IconButton>
                 </ListItemSecondaryAction>
@@ -127,7 +152,13 @@ export class SingleList extends PureComponent {
         </ListContainer>
 
         <Zoom in unmountOnExit timeout={{ enter: duration.enteringScreen, exit: duration.leavingScreen }}>
-          <Button variant="fab" color="primary" aria-label="add" className={classes.fab}>
+          <Button
+            variant="fab"
+            color="primary"
+            aria-label="add"
+            className={classes.fab}
+            onClick={() => this.props.changeModalVisibility(true)}
+          >
             <AddIcon />
           </Button>
         </Zoom>
