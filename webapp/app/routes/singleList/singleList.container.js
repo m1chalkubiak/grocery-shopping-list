@@ -9,17 +9,31 @@ import styles from './singleList.styles';
 
 import { SingleList } from './singleList.component';
 import { ListsActions } from '../../modules/lists/lists.redux';
-import { selectListsSingle, selectListsIsLoadingSingle } from '../../modules/lists/lists.selectors';
+import {
+  selectListsSingle,
+  selectListsIsLoadingSingle,
+  selectIsCreateModalVisible,
+  selectEditItemName,
+  selectEditModalVisible,
+} from '../../modules/lists/lists.selectors';
 
 
 const mapStateToProps = createStructuredSelector({
   list: selectListsSingle,
   isLoadingList: selectListsIsLoadingSingle,
+  isCreateModalVisible: selectIsCreateModalVisible,
+  isEditModalVisible: selectEditModalVisible,
+  editItemName: selectEditItemName,
 });
 
 export const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchList: ListsActions.fetchSingle,
   toggleItemActive: ListsActions.toggleItemActive,
+  removeItem: ListsActions.removeItem,
+  changeModalVisibility: ListsActions.changeModalVisibility,
+  createItem: ListsActions.createItem,
+  changeEditModalVisibility: ListsActions.changeEditModalVisibility,
+  updateItem: ListsActions.updateItem,
 }, dispatch);
 
 export default compose(

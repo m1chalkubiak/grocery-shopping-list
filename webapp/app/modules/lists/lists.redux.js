@@ -11,9 +11,23 @@ export const { Types: ListsTypes, Creators: ListsActions } = createActions({
   toggleItemActive: ['id', 'value'],
   toggleItemActiveSuccess: ['data'],
   toggleItemActiveError: ['payload'],
+  removeItem: ['id'],
+  removeItemSuccess: ['data'],
+  removeItemError: ['payload'],
   subscribeItem: [],
+  subscribeItemRemoved: [],
+  subscribeItemCreated: [],
   subscribeItemError: ['payload'],
   onItemUpdated: ['data'],
+  onItemRemoved: ['data'],
+  onItemCreated: ['data'],
+  changeModalVisibility: ['value'],
+  changeEditModalVisibility: ['value'],
+  createItem: ['name'],
+  updateItem: ['name'],
+  createItemSuccess: ['data'],
+  updateItemSuccess: ['data'],
+  createItemError: ['payload'],
 }, { prefix: 'LISTS_' });
 
 const ListsRecord = Record({
@@ -21,6 +35,8 @@ const ListsRecord = Record({
   single: Map(),
   isLoadingData: false,
   isLoadingSingle: false,
+  isCreateModalVisible: false,
+  isEditModalVisible: false,
 });
 
 export const INITIAL_STATE = new ListsRecord();
@@ -51,6 +67,20 @@ const onItemUpdatedHandler = (state = INITIAL_STATE, { data }) => state
     (list) => list.update('items', (items) => items.map((item) => item.get('id') === data.id ? fromJS(data) : item))
   ));
 
+const onItemRemovedHandler = (state = INITIAL_STATE, { data }) => state
+  .updateIn(['single', 'items'], List(), (items) => items.filter(
+    (item) => item.get('id') !== data.itemRemoved)
+  );
+
+const onItemCreatedHandler = (state = INITIAL_STATE, { data }) => state
+  .updateIn(['single', 'items'], List(), (items) => items.push(fromJS(data)));
+
+const changeModalVisibility = (state = INITIAL_STATE, { value }) => state
+  .set('isCreateModalVisible', value);
+
+const changeEditModalVisibility = (state = INITIAL_STATE, { value }) => state
+  .set('isEditModalVisible', value);
+
 export const reducer = createReducer(INITIAL_STATE, {
   [ListsTypes.FETCH]: fetchHandler,
   [ListsTypes.FETCH_SUCCESS]: fetchSuccessHandler,
@@ -60,4 +90,8 @@ export const reducer = createReducer(INITIAL_STATE, {
   [ListsTypes.FETCH_SINGLE_ERROR]: fetchSingleErrorHandler,
   [ListsTypes.TOGGLE_ITEM_ACTIVE_SUCCESS]: toggleItemActiveSuccessHandler,
   [ListsTypes.ON_ITEM_UPDATED]: onItemUpdatedHandler,
+  [ListsTypes.ON_ITEM_REMOVED]: onItemRemovedHandler,
+  [ListsTypes.ON_ITEM_CREATED]: onItemCreatedHandler,
+  [ListsTypes.CHANGE_MODAL_VISIBILITY]: changeModalVisibility,
+  [ListsTypes.CHANGE_EDIT_MODAL_VISIBILITY]: changeEditModalVisibility,
 });
